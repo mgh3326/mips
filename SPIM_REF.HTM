@@ -1,0 +1,1359 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>SPIM Quick Reference</title>
+<meta name="generator" content="Namo WebEditor v3.0">
+</head>
+
+<body background="../icons/bwcircuit.gif" bgcolor="white" text="black" link="blue"
+ vlink="purple" alink="red">
+
+<h2 align="center">SPIM Quick Reference</h2>
+<p>This Web page was created by reformatting portions of the LaTeX source file 
+of the public domain documentation distributed with the SPIM simulator. This 
+documentation is fairly consistent with the information in Appendix A of the 
+Patterson and Hennessy text, but it is not identical. For reference, the sections 
+where the same information appears in Patterson and Hennessy is included with 
+the Web document section title. </p>
+<p>&nbsp;</p>
+<h3>Contents</h3>
+<ul type="disc">
+    <li><a href="#registers">MIPS Registers and Usage Convention</a> 
+    <li><a href="#syscalls">Table of </a><a href="#syscalls"><tt>sycsalls</tt></a> 
+    
+    <li><a href="#directives">Assembler Directives</a> 
+    <li><a href="#instructions">SPIM Instruction Set</a> 
+    <ul type="disc">
+        <li><a href="#arithlogic">Arithmetic and Logical Instructions</a>. 
+        <li><a href="#const">Constant-Manipulating Instructions</a> 
+        <li><a href="#compare">Comparison Instructions</a> 
+        <li><a href="#branch">Branch and Jump Instructions</a> 
+        <li><a href="#load">Load Instructions</a> 
+        <li><a href="#store">Store Instructions</a> 
+        <li><a href="#data">Data Movement Instructions</a> 
+        <li><a href="#fp">Floating Point Instructions</a> 
+        <li><a href="#traps">Exception and Trap Instructions</a> 
+    </ul>
+</ul>
+<h3><a name="registers">MIPS Registers and Usage Convention<br>
+(Patterson &amp; Hennessy, Figure A.9 on page A-23)</a></h3>
+<div align="center"><table border>
+    <tr>
+        <th align="center"><p>Register Name </th>
+        <th align="center"><p>Number </th>
+        <th align="center"><p>Usage </th>
+    </tr>
+    <tr>
+        <td align="center"><p>zero </td>
+        <td align="center"><p>0 </td>
+        <td><p>Constant 0 </td>
+    </tr>
+    <tr>
+        <td align="center"><p>at </td>
+        <td align="center"><p>1 </td>
+        <td><p>Reserved for assembler </td>
+    </tr>
+    <tr>
+        <td align="center"><p>v0 </td>
+        <td align="center"><p>2 </td>
+        <td><p>Expression evaluation and results of a function </td>
+    </tr>
+    <tr>
+        <td align="center"><p>v1 </td>
+        <td align="center"><p>3 </td>
+        <td><p>Expression evaluation and results of a function </td>
+    </tr>
+    <tr>
+        <td align="center"><p>a0 </td>
+        <td align="center"><p>4 </td>
+        <td><p>Argument 1 </td>
+    </tr>
+    <tr>
+        <td align="center"><p>a1 </td>
+        <td align="center"><p>5 </td>
+        <td><p>Argument 2 </td>
+    </tr>
+    <tr>
+        <td align="center"><p>a2 </td>
+        <td align="center"><p>6 </td>
+        <td><p>Argument 3 </td>
+    </tr>
+    <tr>
+        <td align="center"><p>a3 </td>
+        <td align="center"><p>7 </td>
+        <td><p>Argument 4 </td>
+    </tr>
+    <tr>
+        <td align="center"><p>t0 </td>
+        <td align="center"><p>8 </td>
+        <td><p>Temporary (not preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>t1 </td>
+        <td align="center"><p>9 </td>
+        <td><p>Temporary (not preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>t2 </td>
+        <td align="center"><p>10 </td>
+        <td><p>Temporary (not preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>t3 </td>
+        <td align="center"><p>11 </td>
+        <td><p>Temporary (not preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>t4 </td>
+        <td align="center"><p>12 </td>
+        <td><p>Temporary (not preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>t5 </td>
+        <td align="center"><p>13 </td>
+        <td><p>Temporary (not preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>t6 </td>
+        <td align="center"><p>14 </td>
+        <td><p>Temporary (not preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>t7 </td>
+        <td align="center"><p>15 </td>
+        <td><p>Temporary (not preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>s0 </td>
+        <td align="center"><p>16 </td>
+        <td><p>Saved temporary (preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>s1 </td>
+        <td align="center"><p>17 </td>
+        <td><p>Saved temporary (preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>s2 </td>
+        <td align="center"><p>18 </td>
+        <td><p>Saved temporary (preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>s3 </td>
+        <td align="center"><p>19 </td>
+        <td><p>Saved temporary (preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>s4 </td>
+        <td align="center"><p>20 </td>
+        <td><p>Saved temporary (preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>s5 </td>
+        <td align="center"><p>21 </td>
+        <td><p>Saved temporary (preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>s6 </td>
+        <td align="center"><p>22 </td>
+        <td><p>Saved temporary (preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>s7 </td>
+        <td align="center"><p>23 </td>
+        <td><p>Saved temporary (preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>t8 </td>
+        <td align="center"><p>24 </td>
+        <td><p>Temporary (not preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>t9 </td>
+        <td align="center"><p>25 </td>
+        <td><p>Temporary (not preserved across call) </td>
+    </tr>
+    <tr>
+        <td align="center"><p>k0 </td>
+        <td align="center"><p>26 </td>
+        <td><p>Reserved for OS kernel </td>
+    </tr>
+    <tr>
+        <td align="center"><p>k1 </td>
+        <td align="center"><p>27 </td>
+        <td><p>Reserved for OS kernel </td>
+    </tr>
+    <tr>
+        <td align="center"><p>gp </td>
+        <td align="center"><p>28 </td>
+        <td><p>Pointer to global area </td>
+    </tr>
+    <tr>
+        <td align="center"><p>sp </td>
+        <td align="center"><p>29 </td>
+        <td><p>Stack pointer </td>
+    </tr>
+    <tr>
+        <td align="center"><p>fp </td>
+        <td align="center"><p>30 </td>
+        <td><p>Frame pointer </td>
+    </tr>
+    <tr>
+        <td align="center"><p>ra </td>
+        <td align="center"><p>31 </td>
+        <td><p>Return address (used by function call) </td>
+    </tr>
+</table></div>
+<h3><a name="syscalls">System Services<br>
+(Patterson &amp; Hennessy, Figure A.16 on page A-46)</a></h3>
+<div align="center"><table border>
+    <tr>
+        <th align="center"><p>Service </th>
+        <th align="center"><p>System Call Code </th>
+        <th align="center"><p>Arguments </th>
+        <th align="center"><p>Result </th>
+    </tr>
+    <tr>
+        <td><p>print_int </td>
+        <td align="center"><p>1 </td>
+        <td><p><tt>$a0 </tt>= integer </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><p>print_float </td>
+        <td align="center"><p>2 </td>
+        <td><p><tt>$f12 </tt>= float </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><p>print_double </td>
+        <td align="center"><p>3 </td>
+        <td><p><tt>$f12 </tt>= double </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><p>print_string </td>
+        <td align="center"><p>4 </td>
+        <td><p><tt>$a0 </tt>= string </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><p>read_int </td>
+        <td align="center"><p>5 </td>
+        <td></td>
+        <td><p>integer (in <tt>$v0</tt>) </td>
+    </tr>
+    <tr>
+        <td><p>read_float </td>
+        <td align="center"><p>6 </td>
+        <td></td>
+        <td><p>float (in <tt>$f0</tt>) </td>
+    </tr>
+    <tr>
+        <td><p>read_double </td>
+        <td align="center"><p>7 </td>
+        <td></td>
+        <td><p>double (in <tt>$f0</tt>) </td>
+    </tr>
+    <tr>
+        <td><p>read_string </td>
+        <td align="center"><p>8 </td>
+        <td><p><tt>$a0 </tt>= buffer, <tt>$a1 </tt>= length </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><p>sbrk </td>
+        <td align="center"><p>9 </td>
+        <td><p><tt>$a0 </tt>= amount </td>
+        <td><p>address (in <tt>$v0</tt>) </td>
+    </tr>
+    <tr>
+        <td><p>exit </td>
+        <td align="center"><p>10 </td>
+        <td></td>
+        <td></td>
+    </tr>
+</table></div>
+<h3><a name="directives">Assembler Directives<br>
+(Patterson &amp; Hennessy, pages A-49 and A-50)</a></h3>
+<dl>
+    <dt><tt>.align n</tt> 
+    <dd>Align the next datum on a 2^n byte boundary. For example, <tt>.align 
+    2</tt> aligns the next value on a word boundary. <tt>.align 0</tt> turns 
+    off automatic alignment of <tt>.half</tt>, <tt>.word</tt>, <tt>.float</tt>, 
+    and <tt>.double</tt> directives until the next <tt>.data</tt> or <tt>.kdata</tt> 
+    directive. 
+    <dt><tt>.ascii str</tt> 
+    <dd>Store the string in memory, but do not null-terminate it. 
+    <dt><tt>.asciiz str</tt> 
+    <dd>Store the string in memory and null-terminate it. 
+    <dt><tt>.byte b1, ..., bn</tt> 
+    <dd>Store the <em>n</em> values in successive bytes of memory. 
+    <dt><tt>.data <addr></tt> 
+    <dd>The following data items should be stored in the data segment. If the 
+    optional argument <em>addr</em> is present, the items are stored beginning 
+    at address <em>addr</em>. 
+    <dt><tt>.double d1, ..., dn</tt> 
+    <dd>Store the <em>n</em> floating point double precision numbers in successive 
+    memory locations. 
+    <dt><tt>.extern sym size</tt> 
+    <dd>Declare that the datum stored at <tt>sym</tt> is <tt>size</tt> bytes 
+    large and is a global symbol. This directive enables the assembler to store 
+    the datum in a portion of the data segment that is efficiently accessed 
+    via register <tt>$gp</tt>. 
+    <dt><tt>.float f1, ..., fn</tt> 
+    <dd>Store the <em>n</em> floating point single precision numbers in successive 
+    memory locations. 
+    <dt><tt>.globl sym</tt> 
+    <dd>Declare that symbol <tt>sym</tt> is global and can be referenced from 
+    other files. 
+    <dt><tt>.half h1, ..., hn</tt> 
+    <dd>Store the <em>n</em> 16-bit quantities in successive memory halfwords. 
+    
+    <dt><tt>.kdata <addr></tt> 
+    <dd>The following data items should be stored in the kernel data segment. 
+    If the optional argument <em>addr</em> is present, the items are stored 
+    beginning at address <em>addr</em>. 
+    <dt><tt>.ktext <addr></tt> 
+    <dd>The next items are put in the kernel text segment. In SPIM, these items 
+    may only be instructions or words (see the <tt>.word</tt> directive below). 
+    If the optional argument <em>addr</em> is present, the items are stored 
+    beginning at address <em>addr</em>. 
+    <dt><tt>.space n</tt> 
+    <dd>Allocate <em>n</em> bytes of space in the current segment (which must 
+    be the data segment in SPIM). 
+    <dt><tt>.text <addr></tt> 
+    <dd>The next items are put in the user text segment. In SPIM, these items 
+    may only be instructions or words (see the <tt>.word</tt> directive below). 
+    If the optional argument <em>addr</em> is present, the items are stored 
+    beginning at address <em>addr</em>. 
+    <dt><tt>.word w1, ..., wn</tt> 
+    <dd>Store the <em>n</em> 32-bit quantities in successive memory words. 
+</dl>
+<h3><a name="instructions">SPIM Instruction Set<br>
+(Patterson &amp; Hennessy, pages A-52 to A-70)</a></h3>
+<h3><a name="arithlogic">Arithmetic and Logical Instructions</a></h3>
+<p>In all instructions below, <tt>Src2</tt> can either be a register or an immediate 
+value (a 16 bit integer). The immediate forms of the instructions are only included 
+for reference. The assembler will translate the more general form of an instruction 
+(e.g., <tt>add</tt>) into the immediate form (e.g., <tt>addi</tt>) if the second 
+argument is constant. 
+<table border="0">
+    <tr>
+        <td><p><b><tt>abs Rdest, Rsrc</tt></b></td>
+        <td align="right"><p>Absolute Value </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Put the absolute value of the integer 
+                from register <tt>Rsrc</tt> in register <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>add Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Addition (with overflow) </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>addi Rdest, Rsrc1, Imm</tt></b></td>
+        <td align="right"><p>Addition Immediate (with overflow) </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>addu Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Addition (without overflow) </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>addiu Rdest, Rsrc1, Imm</tt></b></td>
+        <td align="right"><p>Addition Immediate (without overflow) </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Put the sum of the integers from register 
+                <tt>Rsrc1</tt> and <tt>Src2</tt> (or <tt>Imm</tt>) into register 
+                <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>and Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>AND </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>andi Rdest, Rsrc1, Imm</tt></b></td>
+        <td align="right"><p>AND Immediate </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Put the logical AND of the integers from 
+                register <tt>Rsrc1</tt> and <tt>Src2</tt> (or <tt>Imm</tt>) 
+                into register <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>div Rsrc1, Rsrc2</tt></b></td>
+        <td align="right"><p>Divide (with overflow) </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>divu Rsrc1, Rsrc2</tt></b></td>
+        <td align="right"><p>Divide (without overflow) </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Divide the contents of the two registers. 
+                Leave the quotient in register <tt>lo</tt> and the remainder 
+                in register <tt>hi</tt>. Note that if an operand is negative, 
+                the remainder is unspecified by the MIPS architecture and depends 
+                on the conventions of the machine on which SPIM is run. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>div Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Divide (with overflow) </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>divu Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Divide (without overflow) </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Put the quotient of the integers from 
+                register <tt>Rsrc1</tt> and <tt>Src2</tt> into register <tt>Rdest</tt>. 
+                </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mul Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Multiply (without overflow) </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mulo Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Multiply (with overflow) </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mulou Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Unsigned Multiply (with overflow) </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Put the product of the integers from 
+                register <tt>Rsrc1</tt> and <tt>Src2</tt> into register <tt>Rdest</tt>. 
+                </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mult Rsrc1, Rsrc2</tt></b></td>
+        <td align="right"><p>Multiply </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>multu Rsrc1, Rsrc2</tt></b></td>
+        <td align="right"><p>Unsigned Multiply </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Multiply the contents of the two registers. 
+                Leave the low-order word of the product in register <tt>lo</tt> 
+                and the high-word in register <tt>hi</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>neg Rdest, Rsrc</tt></b></td>
+        <td align="right"><p>Negate Value (with overflow) </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>negu Rdest, Rsrc</tt></b></td>
+        <td align="right"><p>Negate Value (without overflow) </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Put the negative of the integer from 
+                register <tt>Rsrc</tt> into register <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>nor Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>NOR </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Put the logical NOR of the integers from 
+                register <tt>Rsrc1</tt> and <tt>Src2</tt> into register <tt>Rdest</tt>. 
+                </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>not Rdest, Rsrc</tt></b></td>
+        <td align="right"><p>NOT </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Put the bitwise logical negation of the 
+                integer from register <tt>Rsrc</tt> into register <tt>Rdest</tt>. 
+                </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>or Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>OR </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>ori Rdest, Rsrc1, Imm</tt></b></td>
+        <td align="right"><p>OR Immediate </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Put the logical OR of the integers from 
+                register <tt>Rsrc1</tt> and <tt>Src2</tt> (or <tt>Imm</tt>) 
+                into register <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>rem Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Remainder </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>remu Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Unsigned Remainder </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Put the remainder from dividing the integer 
+                in register <tt>Rsrc1</tt> by the integer in <tt>Src2</tt> into 
+                register <tt>Rdest</tt>. Note that if an operand is negative, 
+                the remainder is unspecified by the MIPS architecture and depends 
+                on the conventions of the machine on which SPIM is run. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>rol Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Rotate Left </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>ror Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Rotate Right </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Rotate the contents of register <tt>Rsrc1</tt> 
+                left (right) by the distance indicated by <tt>Src2</tt> and 
+                put the result in register <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sll Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Shift Left Logical </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sllv Rdest, Rsrc1, Rsrc2</tt></b></td>
+        <td align="right"><p>Shift Left Logical Variable </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sra Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Shift Right Arithmetic </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>srav Rdest, Rsrc1, Rsrc2</tt></b></td>
+        <td align="right"><p>Shift Right Arithmetic Variable </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>srl Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Shift Right Logical </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>srlv Rdest, Rsrc1, Rsrc2</tt></b></td>
+        <td align="right"><p>Shift Right Logical Variable </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Shift the contents of register <tt>Rsrc1</tt> 
+                left (right) by the distance indicated by <tt>Src2</tt> (<tt>Rsrc2</tt>) 
+                and put the result in register <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sub Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Subtract (with overflow) </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>subu Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Subtract (without overflow) </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Put the difference of the integers from 
+                register <tt>Rsrc1</tt> and <tt>Src2</tt> into register <tt>Rdest</tt>. 
+                </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>xor Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>XOR </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>xori Rdest, Rsrc1, Imm</tt></b></td>
+        <td align="right"><p>XOR Immediate </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Put the logical XOR of the integers from 
+                register <tt>Rsrc1</tt> and <tt>Src2</tt> (or <tt>Imm</tt>) 
+                into register <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+</table>
+<h3><a name="const">Constant-Manipulating Instructions</a></h3>
+<table border="0">
+    <tr>
+        <td><p><b><tt>li Rdest, imm</tt></b></td>
+        <td align="right"><p>Load Immediate </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Move the immediate <tt>imm</tt> into 
+                register <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>lui Rdest, imm</tt></b></td>
+        <td align="right"><p>Load Upper Immediate </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Load the lower halfword of the immediate 
+                <tt>imm</tt> into the upper halfword of register <tt>Rdest</tt>. 
+                The lower bits of the register are set to 0. </blockquote></td>
+    </tr>
+</table>
+<h3><a name="compare">Comparison Instructions</a></h3>
+<p>In all instructions below, <tt>Src2</tt> can either be a register or an immediate 
+value (a 16 bit integer). 
+<table border="0">
+    <tr>
+        <td><p><b><tt>seq Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Set Equal </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Set register <tt>Rdest</tt> to 1 if register 
+                <tt>Rsrc1</tt> equals <tt>Src2</tt> and to be 0 otherwise. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sge Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Set Greater Than Equal </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sgeu Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Set Greater Than Equal Unsigned </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Set register <tt>Rdest</tt> to 1 if register 
+                <tt>Rsrc1</tt> is greater than or equal to <tt>Src2</tt> and 
+                to 0 otherwise. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sgt Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Set Greater Than </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sgtu Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Set Greater Than Unsigned </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Set register <tt>Rdest</tt> to 1 if register 
+                <tt>Rsrc1</tt> is greater than <tt>Src2</tt> and to 0 otherwise. 
+                </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sle Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Set Less Than Equal </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sleu Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Set Less Than Equal Unsigned </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Set register <tt>Rdest</tt> to 1 if register 
+                <tt>Rsrc1</tt> is less than or equal to <tt>Src2</tt> and to 
+                0 otherwise. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>slt Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Set Less Than </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>slti Rdest, Rsrc1, Imm</tt></b></td>
+        <td align="right"><p>Set Less Than Immediate </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sltu Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Set Less Than Unsigned </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sltiu Rdest, Rsrc1, Imm</tt></b></td>
+        <td align="right"><p>Set Less Than Unsigned Immediate </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Set register <tt>Rdest</tt> to 1 if register 
+                <tt>Rsrc1</tt> is less than <tt>Src2</tt> (or <tt>Imm</tt>) 
+                and to 0 otherwise. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sne Rdest, Rsrc1, Src2</tt></b></td>
+        <td align="right"><p>Set Not Equal </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Set register <tt>Rdest</tt> to 1 if register 
+                <tt>Rsrc1</tt> is not equal to <tt>Src2</tt> and to 0 otherwise. 
+                </blockquote></td>
+    </tr>
+</table>
+<h3><a name="branch">Branch and Jump Instructions</a></h3>
+<p>In all instructions below, <tt>Src2</tt> can either be a register or an immediate 
+value (integer). Branch instructions use a signed 16-bit offset field; hence 
+they can jump 2^15-1 <em>instructions</em> (not bytes) forward or 2^15 instructions 
+backwards. The <em>jump</em> instruction contains a 26 bit address field. 
+<table border="0">
+    <tr>
+        <td><p><b><tt>b label</tt></b></td>
+        <td align="right"><p>Branch instruction </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Unconditionally branch to the instruction 
+                at the label. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bczt label</tt></b></td>
+        <td align="right"><p>Branch Coprocessor <em>z</em> True </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bczf label</tt></b></td>
+        <td align="right"><p>Branch Coprocessor <em>z</em> False </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if coprocessor <em>z</em>'s condition flag is true 
+                (false). </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>beq Rsrc1, Src2, label</tt></b></td>
+        <td align="right"><p>Branch on Equal </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of register <tt>Rsrc1</tt> equals 
+                <tt>Src2</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>beqz Rsrc, label</tt></b></td>
+        <td align="right"><p>Branch on Equal Zero </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of <tt>Rsrc</tt> equals 0. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bge Rsrc1, Src2, label</tt></b></td>
+        <td align="right"><p>Branch on Greater Than Equal </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bgeu Rsrc1, Src2, label</tt></b></td>
+        <td align="right"><p>Branch on GTE Unsigned </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of register <tt>Rsrc1</tt> are 
+                greater than or equal to <tt>Src2</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bgez Rsrc, label</tt></b></td>
+        <td align="right"><p>Branch on Greater Than Equal Zero </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of <tt>Rsrc</tt> are greater than 
+                or equal to 0. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bgezal Rsrc, label</tt></b></td>
+        <td align="right"><p>Branch on Greater Than Equal Zero And Link </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of <tt>Rsrc</tt> are greater than 
+                or equal to 0. Save the address of the next instruction in register 
+                31. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bgt Rsrc1, Src2, label</tt></b></td>
+        <td align="right"><p>Branch on Greater Than </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bgtu Rsrc1, Src2, label</tt></b></td>
+        <td align="right"><p>Branch on Greater Than Unsigned </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of register <tt>Rsrc1</tt> are 
+                greater than <tt>Src2</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bgtz Rsrc, label</tt></b></td>
+        <td align="right"><p>Branch on Greater Than Zero </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of <tt>Rsrc</tt> are greater than 
+                0. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>ble Rsrc1, Src2, label</tt></b></td>
+        <td align="right"><p>Branch on Less Than Equal </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bleu Rsrc1, Src2, label</tt></b></td>
+        <td align="right"><p>Branch on LTE Unsigned </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of register <tt>Rsrc1</tt> are 
+                less than or equal to <tt>Src2</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>blez Rsrc, label</tt></b></td>
+        <td align="right"><p>Branch on Less Than Equal Zero </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of <tt>Rsrc</tt> are less than 
+                or equal to 0. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bgezal Rsrc, label</tt></b></td>
+        <td align="right"><p>Branch on Greater Than Equal Zero And Link </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bltzal Rsrc, label</tt></b></td>
+        <td align="right"><p>Branch on Less Than And Link </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of <tt>Rsrc</tt> are greater or 
+                equal to 0 or less than 0, respectively. Save the address of 
+                the next instruction in register 31. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>blt Rsrc1, Src2, label</tt></b></td>
+        <td align="right"><p>Branch on Less Than </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bltu Rsrc1, Src2, label</tt></b></td>
+        <td align="right"><p>Branch on Less Than Unsigned </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of register <tt>Rsrc1</tt> are 
+                less than <tt>Src2</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bltz Rsrc, label</tt></b></td>
+        <td align="right"><p>Branch on Less Than Zero </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of <tt>Rsrc</tt> are less than 
+                0. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bne Rsrc1, Src2, label</tt></b></td>
+        <td align="right"><p>Branch on Not Equal </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of register <tt>Rsrc1</tt> are 
+                not equal to <tt>Src2</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>bnez Rsrc, label</tt></b></td>
+        <td align="right"><p>Branch on Not Equal Zero </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Conditionally branch to the instruction 
+                at the label if the contents of <tt>Rsrc</tt> are not equal 
+                to 0. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>j label</tt></b></td>
+        <td align="right"><p>Jump </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Unconditionally jump to the instruction 
+                at the label. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>jal label</tt></b></td>
+        <td align="right"><p>Jump and Link </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>jalr Rsrc</tt></b></td>
+        <td align="right"><p>Jump and Link Register </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Unconditionally jump to the instruction 
+                at the label or whose address is in register <tt>Rsrc</tt>. 
+                Save the address of the next instruction in register 31. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>jr Rsrc</tt></b></td>
+        <td align="right"><p>Jump Register </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Unconditionally jump to the instruction 
+                whose address is in register <tt>Rsrc</tt>. </blockquote></td>
+    </tr>
+</table>
+<h3><a name="load">Load Instructions</a></h3>
+<table border="0">
+    <tr>
+        <td><p><b><tt>la Rdest, address</tt></b></td>
+        <td align="right"><p>Load Address </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Load computed <em>address</em>, not the 
+                contents of the location, into register <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>lb Rdest, address</tt></b></td>
+        <td align="right"><p>Load Byte </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>lbu Rdest, address</tt></b></td>
+        <td align="right"><p>Load Unsigned Byte </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Load the byte at <em>address</em> into 
+                register <tt>Rdest</tt>. The byte is sign-extended by the <tt>lb</tt>, 
+                but not the <tt>lbu</tt>, instruction. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>ld Rdest, address</tt></b></td>
+        <td align="right"><p>Load Double-Word </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Load the 64-bit quantity at <em>address</em> 
+                into registers <tt>Rdest</tt> and <tt>Rdest + 1</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>lh Rdest, address</tt></b></td>
+        <td align="right"><p>Load Halfword </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>lhu Rdest, address</tt></b></td>
+        <td align="right"><p>Load Unsigned Halfword </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Load the 16-bit quantity (halfword) at 
+                <em>address</em> into register <tt>Rdest</tt>. The halfword 
+                is sign-extended by the <tt>lh</tt>, but not the <tt>lhu</tt>, 
+                instruction </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>lw Rdest, address</tt></b></td>
+        <td align="right"><p>Load Word </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Load the 32-bit quantity (word) at <em>address</em> 
+                into register <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>lwcz Rdest, address</tt></b></td>
+        <td align="right"><p>Load Word Coprocessor <em>z</em> </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Load the word at <em>address</em> into 
+                register <tt>Rdest</tt> of coprocessor <em>z</em> (0-3). </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>lwl Rdest, address</tt></b></td>
+        <td align="right"><p>Load Word Left </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>lwr Rdest, address</tt></b></td>
+        <td align="right"><p>Load Word Right </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Load the left (right) bytes from the 
+                word at the possibly-unaligned <em>address</em> into register 
+                <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>ulh Rdest, address</tt></b></td>
+        <td align="right"><p>Unaligned Load Halfword </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>ulhu Rdest, address</tt></b></td>
+        <td align="right"><p>Unaligned Load Halfword Unsigned </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Load the 16-bit quantity (halfword) at 
+                the possibly-unaligned <em>address</em> into register <tt>Rdest</tt>. 
+                The halfword is sign-extended by the <tt>ulh</tt>, but not the 
+                <tt>ulhu</tt>, instruction </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>ulw Rdest, address</tt></b></td>
+        <td align="right"><p>Unaligned Load Word </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Load the 32-bit quantity (word) at the 
+                possibly-unaligned <em>address</em> into register <tt>Rdest</tt>. 
+                </blockquote></td>
+    </tr>
+</table>
+<h3><a name="store">Store Instructions</a></h3>
+<table border="0">
+    <tr>
+        <td><p><b><tt>sb Rsrc, address</tt></b></td>
+        <td align="right"><p>Store Byte </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Store the low byte from register <tt>Rsrc</tt> 
+                at <em>address</em>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sd Rsrc, address</tt></b></td>
+        <td align="right"><p>Store Double-Word </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Store the 64-bit quantity in registers 
+                <tt>Rsrc</tt> and <tt>Rsrc + 1</tt> at <em>address</em>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sh Rsrc, address</tt></b></td>
+        <td align="right"><p>Store Halfword </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Store the low halfword from register 
+                <tt>Rsrc</tt> at <em>address</em>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sw Rsrc, address</tt></b></td>
+        <td align="right"><p>Store Word </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>S tore the word from register <tt>Rsrc</tt> 
+                at <em>address</em>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>swcz Rsrc, address</tt></b></td>
+        <td align="right"><p>Store Word Coprocessor <em>z</em> </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Store the word from register <tt>Rsrc</tt> 
+                of coprocessor <em>z</em> at <em>address</em>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>swl Rsrc, address</tt></b></td>
+        <td align="right"><p>Store Word Left </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>swr Rsrc, address</tt></b></td>
+        <td align="right"><p>Store Word Right </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Store the left (right) bytes from register 
+                <tt>Rsrc</tt> at the possibly-unaligned <em>address</em>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>ush Rsrc, address</tt></b></td>
+        <td align="right"><p>Unaligned Store Halfword </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Store the low halfword from register 
+                <tt>Rsrc</tt> at the possibly-unaligned <em>address</em>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>usw Rsrc, address</tt></b></td>
+        <td align="right"><p>Unaligned Store Word </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Store the word from register <tt>Rsrc</tt> 
+                at the possibly-unaligned <em>address</em>. </blockquote></td>
+    </tr>
+</table>
+<h3><a name="data">Data Movement Instructions</a></h3>
+<table border="0">
+    <tr>
+        <td><p><b><tt>move Rdest, Rsrc</tt></b></td>
+        <td align="right"><p>Move </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Move the contents of <tt>Rsrc</tt> to 
+                <tt>Rdest</tt>. </p></blockquote>
+            <p>The multiply and divide unit produces its result in two additional 
+            registers, hi and lo. These instructions move values to and from 
+            these registers. The multiply, divide, and remainder instructions 
+            described above are pseudoinstructions that make it appear as if 
+            this unit operates on the general registers and detect error conditions 
+            such as divide by zero or overflow. </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mfhi Rdest</tt></b></td>
+        <td align="right"><p>Move From hi </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mflo Rdest</tt></b></td>
+        <td align="right"><p>Move From lo </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Move the contents of the hi (lo) register 
+                to register <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mthi Rdest</tt></b></td>
+        <td align="right"><p>Move To hi </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mtlo Rdest</tt></b></td>
+        <td align="right"><p>Move To lo </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Move the contents register <tt>Rdest</tt> 
+                to the hi (lo) register. </p></blockquote>
+            <p>Coprocessors have their own register sets. These instructions 
+            move values between these registers and the CPU's registers. </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mfcz Rdest, CPsrc</tt></b></td>
+        <td align="right"><p>Move From Coprocessor <em>z</em> </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Move the contents of coprocessor <em>z</em>'s 
+                register <tt>CPsrc</tt> to CPU register <tt>Rdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mfc1.d Rdest, FRsrc1</tt></b></td>
+        <td align="right"><p>Move Double From Coprocessor 1 </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Move the contents of floating point registers 
+                <tt>FRsrc1</tt> and <tt>FRsrc1 + 1</tt> to CPU registers <tt>Rdest</tt> 
+                and <tt>Rdest + 1</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mtcz Rsrc, CPdest</tt></b></td>
+        <td align="right"><p>Move To Coprocessor <em>z</em> </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Move the contents of CPU register <tt>Rsrc</tt> 
+                to coprocessor <em>z</em>'s register <tt>CPdest</tt>. </blockquote></td>
+    </tr>
+</table>
+<h3><a name="fp">Floating Point Instructions</a></h3>
+<p>The MIPS has a floating point coprocessor (numbered 1) that operates on single 
+precision (32-bit) and double precision (64-bit) floating point numbers. This 
+coprocessor has its own registers, which are numbered <em><tt>f0-f31</tt></em>. 
+Because these registers are only 32-bits wide, two of them are required to hold 
+doubles. To simplify matters, floating point operations only use even-numbered 
+registers - including instructions that operate on single floats. Values are 
+moved in or out of these registers a word (32-bits) at a time by <tt>lwc1</tt>, 
+<tt>swc1</tt>, <tt>mtc1</tt>, and <tt>mfc1</tt> instructions described above 
+or by the <tt>l.s</tt>, <tt>l.d</tt>, <tt>s.s</tt>, and <tt>s.d</tt> pseudoinstructions 
+described below. The flag set by floating point comparison operations is read 
+by the CPU with its <tt>bc1t</tt> and <tt>bc1f</tt> instructions. In all instructions 
+below, <tt>FRdest</tt>, <tt>FRsrc1</tt>, <tt>FRsrc2</tt>, and <tt>FRsrc</tt> 
+are floating point registers (e.g., <em><tt>f2</tt></em>). 
+<table border="0">
+    <tr>
+        <td><p><b><tt>abs.d FRdest, FRsrc</tt></b></td>
+        <td align="right"><p>Floating Point Absolute Value Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>abs.s FRdest, FRsrc</tt></b></td>
+        <td align="right"><p>Floating Point Absolute Value Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Compute the absolute value of the floating 
+                float double (single) in register <tt>FRsrc</tt> and put it 
+                in register <tt>FRdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>add.d FRdest, FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Floating Point Addition Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>add.s FRdest, FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Floating Point Addition Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Compute the sum of the floating float 
+                doubles (singles) in registers <tt>FRsrc1</tt> and <tt>FRsrc2</tt> 
+                and put it in register <tt>FRdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>c.eq.d FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Compare Equal Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>c.eq.s FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Compare Equal Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Compare the floating point double in 
+                register <tt>FRsrc1</tt> against the one in <tt>FRsrc2</tt> 
+                and set the floating point condition flag true if they are equal. 
+                </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>c.le.d FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Compare Less Than Equal Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>c.le.s FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Compare Less Than Equal Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Compare the floating point double in 
+                register <tt>FRsrc1</tt> against the one in <tt>FRsrc2</tt> 
+                and set the floating point condition flag true if the first 
+                is less than or equal to the second. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>c.lt.d FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Compare Less Than Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>c.lt.s FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Compare Less Than Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Compare the floating point double in 
+                register <tt>FRsrc1</tt> against the one in <tt>FRsrc2</tt> 
+                and set the condition flag true if the first is less than the 
+                second. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>cvt.d.s FRdest, FRsrc</tt></b></td>
+        <td align="right"><p>Convert Single to Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>cvt.d.w FRdest, FRsrc</tt></b></td>
+        <td align="right"><p>Convert Integer to Double </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Convert the single precision floating 
+                point number or integer in register <tt>FRsrc</tt> to a double 
+                precision number and put it in register <tt>FRdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>cvt.s.d FRdest, FRsrc</tt></b></td>
+        <td align="right"><p>Convert Double to Single </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>cvt.s.w FRdest, FRsrc</tt></b></td>
+        <td align="right"><p>Convert Integer to Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Convert the double precision floating 
+                point number or integer in register <tt>FRsrc</tt> to a single 
+                precision number and put it in register <tt>FRdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>cvt.w.d FRdest, FRsrc</tt></b></td>
+        <td align="right"><p>Convert Double to Integer </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>cvt.w.s FRdest, FRsrc</tt></b></td>
+        <td align="right"><p>Convert Single to Integer </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Convert the double or single precision 
+                floating point number in register <tt>FRsrc</tt> to an integer 
+                and put it in register <tt>FRdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>div.d FRdest, FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Floating Point Divide Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>div.s FRdest, FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Floating Point Divide Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Compute the quotient of the floating 
+                float doubles (singles) in registers <tt>FRsrc1</tt> and <tt>FRsrc2</tt> 
+                and put it in register <tt>FRdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>l.d FRdest, address</tt></b></td>
+        <td align="right"><p>Load Floating Point Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>l.s FRdest, address</tt></b></td>
+        <td align="right"><p>Load Floating Point Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Load the floating float double (single) 
+                at <tt>address</tt> into register <tt>FRdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mov.d FRdest, FRsrc</tt></b></td>
+        <td align="right"><p>Move Floating Point Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mov.s FRdest, FRsrc</tt></b></td>
+        <td align="right"><p>Move Floating Point Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Move the floating float double (single) 
+                from register <tt>FRsrc</tt> to register <tt>FRdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mul.d FRdest, FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Floating Point Multiply Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>mul.s FRdest, FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Floating Point Multiply Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Compute the product of the floating float 
+                doubles (singles) in registers <tt>FRsrc1</tt> and <tt>FRsrc2</tt> 
+                and put it in register <tt>FRdest</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>neg.d FRdest, FRsrc</tt></b></td>
+        <td align="right"><p>Negate Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>neg.s FRdest, FRsrc</tt></b></td>
+        <td align="right"><p>Negate Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Negate the floating point double (single) 
+                in register <tt>FRsrc</tt> and put it in register <tt>FRdest</tt>. 
+                </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>s.d FRdest, address</tt></b></td>
+        <td align="right"><p>Store Floating Point Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>s.s FRdest, address</tt></b></td>
+        <td align="right"><p>Store Floating Point Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Store the floating float double (single) 
+                in register <tt>FRdest</tt> at <tt>address</tt>. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sub.d FRdest, FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Floating Point Subtract Double </td>
+    </tr>
+    <tr>
+        <td><p><b><tt>sub.s FRdest, FRsrc1, FRsrc2</tt></b></td>
+        <td align="right"><p>Floating Point Subtract Single </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Compute the difference of the floating 
+                float doubles (singles) in registers <tt>FRsrc1</tt> and <tt>FRsrc2</tt> 
+                and put it in register <tt>FRdest</tt>. </blockquote></td>
+    </tr>
+</table>
+<h3><a name="traps">Exception and Trap Instructions</a></h3>
+<table border="0">
+    <tr>
+        <td><p><b><tt>rfe</tt></b></td>
+        <td align="right"><p>Return From Exception </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Restore the Status register. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>syscall</tt></b></td>
+        <td align="right"><p>System Call </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Register <em><tt>v0</tt></em> contains 
+                the number of the system call (see System Services) provided 
+                by SPIM. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>break n</tt></b></td>
+        <td align="right"><p>Break </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Cause exception <em>n</em>. Exception 
+                1 is reserved for the debugger. </blockquote></td>
+    </tr>
+    <tr>
+        <td><p><b><tt>nop</tt></b></td>
+        <td align="right"><p>No operation </td>
+    </tr>
+    <tr>
+        <td colspan="2"><blockquote><p>Do nothing. </blockquote></td>
+    </tr>
+</table>
+</body>
+
+</html>

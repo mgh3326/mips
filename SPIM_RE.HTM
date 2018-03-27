@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title> SPIM</title>
+<meta name="generator" content="Namo WebEditor v3.0">
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="purple" alink="red">
+
+<h1><a name="SECTION00010000000000000000">1 SPIM</a></h1>
+<p>SPIM S20 is a simulator that runs programs for the MIPS R2000/R3000 RISC 
+computers. SPIM can read and immediately execute files containing assembly language 
+or MIPS executable files. SPIM is a self-contained system for running these 
+programs and contains a debugger and interface to a few operating system services. 
+</p>
+<p>The architecture of the MIPS computers is simple and regular, which makes 
+it easy to learn and understand. The processor contains 32 general-purpose registers 
+and a well-designed instruction set that make it a propitious target for generating 
+code in a compiler. </p>
+<p>However, the obvious question is: why use a simulator when many people have 
+workstations that contain a hardware, and hence significantly faster, implementation 
+of this computer? One reason is that these workstations are not generally available. 
+Another reason is that these machine will not persist for many years because 
+of the rapid progress leading to new and faster computers. Unfortunately, the 
+trend is to make computers faster by executing several instructions concurrently, 
+which makes their architecture more difficult to understand and program. The 
+MIPS architecture may be the epitome of a simple, clean RISC machine. </p>
+<p>In addition, simulators can provide a better environment for low-level programming 
+than an actual machine because they can detect more errors and provide more 
+features than an actual computer. For example, SPIM has a X-window interface 
+that is better than most debuggers for the actual machines. </p>
+<p>Finally, simulators are an useful tool for studying computers and the programs 
+that run on them. Because they are implemented in software, not silicon, they 
+can be easily modified to add new instructions, build new systems such as multiprocessors, 
+or simply to collect data. </p>
+<h2><a name="SECTION00011000000000000000">1.1 Simulation of a Virtual Machine</a></h2>
+<p>The MIPS architecture, like that of most RISC computers, is difficult to 
+program directly because of its delayed branches, delayed loads, and restricted 
+address modes. This difficulty is tolerable since these computers were designed 
+to be programmed in high-level languages and so present an interface designed 
+for compilers, not programmers. A good part of the complexity results from delayed 
+instructions. A <em>delayed branch</em> takes two cycles to execute. In the 
+second cycle, the instruction immediately following the branch executes. This 
+instruction can perform useful work that normally would have been done before 
+the branch or it can be a <tt>nop</tt> (no operation). Similarly, <em>delayed 
+loads</em> take two cycles so the instruction immediately following a load cannot 
+use the value loaded from memory. </p>
+<p>MIPS wisely choose to hide this complexity by implementing a <em>virtual 
+machine</em> with their assembler. This virtual computer appears to have non-delayed 
+branches and loads and a richer instruction set than the actual hardware. The 
+assembler <em>reorganizes</em> (rearranges) instructions to fill the delay slots. 
+It also simulates the additional, <em>pseudoinstructions</em> by generating 
+short sequences of actual instructions. </p>
+<p>By default, SPIM simulates the richer, virtual machine. It can also simulate 
+the actual hardware. We will describe the virtual machine and only mention in 
+passing features that do not belong to the actual hardware. In doing so, we 
+are following the convention of MIPS assembly language programmers (and compilers), 
+who routinely take advantage of the extended machine. Instructions marked with 
+a dagger (?) are pseudoinstructions. </p>
+<h2><a name="SECTION00012000000000000000">1.2 SPIM Interface</a></h2>
+<p>SPIM provides a simple terminal and a X-window interface. Both provide equivalent 
+functionality, but the X interface is generally easier to use and more informative. 
+</p>
+<p><tt>spim</tt>, the terminal version, and <tt>xspim</tt>, the X version, have 
+the following command-line options: 
+<dl>
+    <dt><tt>-bare</tt> 
+    <dd>Simulate a bare MIPS machine without pseudoinstructions or the additional 
+    addressing modes provided by the assembler. Implies <tt>-quiet</tt>. 
+    <dt><tt>-asm</tt> 
+    <dd>Simulate the virtual MIPS machine provided by the assembler. This is 
+    the default. 
+    <dt><tt>-notrap</tt> 
+    <dd>Do not load the standard trap handler. This trap handler has two functions 
+    that must be assumed by the user's program. First, it handles traps. When 
+    a trap occurs, SPIM jumps to location 0x80000080, which should contain code 
+    to service the exception. Second, this file contains startup code that invokes 
+    the routine <tt>main</tt>. Without the trap handler, execution begins at 
+    the instruction labeled <tt>__start</tt>. 
+    <dt><tt>-trap</tt> 
+    <dd>Load the standard trap handler. This is the default. 
+    <dt><tt>-noquiet</tt> 
+    <dd>Print a message when an exception occurs. This is the default. 
+    <dt><tt>-quiet</tt> 
+    <dd>Do not print a message at an exception. 
+    <dt><tt>-nomapped_io</tt> 
+    <dd>Disable the memory-mapped IO facility (see Section <a href="node5.html#secIO">5</a>). 
+    
+    <dt><tt>-mapped_io</tt> 
+    <dd>Enable the memory-mapped IO facility (see Section <a href="node5.html#secIO">5</a>). 
+    Programs that use SPIM syscalls (see Section <a href="node1.html#secscall">1.5</a>) 
+    to read from the terminal should not also use memory-mapped IO. 
+    <dt><tt>-file</tt> 
+    <dd>Load and execute the assembly code in the file. 
+    <dt><tt>-execute</tt> 
+    <dd>Load and execute the code in the MIPS executable file <em>a.out</em>. 
+    
+    <dt><tt>-s seg size</tt> 
+    <dd>Sets the initial size of memory segment <em>seg</em> to be <em>size</em> 
+    bytes. The memory segments are named: <tt>text</tt>, <tt>data</tt>, <tt>stack</tt>, 
+    <tt>ktext</tt>, and <tt>kdata</tt>. For example, the pair of arguments <tt>-sdata 
+    2000000</tt> starts the user data segment at 2,000,000 bytes. 
+    <dt><tt>-lseg size</tt> 
+    <dd>Sets the limit on how large memory segment <em>seg</em> can grow to 
+    be <em>size</em> bytes. The memory segments that can grow are: <tt>data</tt>, 
+    <tt>stack</tt>, and <tt>kdata</tt>. 
+</dl>
+<h3><a name="SECTION00012100000000000000">1.2.1 Terminal Interface</a></h3>
+<p>The terminal interface (<tt>spim</tt>) provides the following commands: 
+<dl>
+    <dt><tt>exit</tt> 
+    <dd>Exit the simulator. 
+    <dt><tt>read &quot;file&quot;</tt> 
+    <dd>Read <em>file</em> of assembly language commands into SPIM's memory. 
+    If the file has already been read into SPIM, the system should be cleared 
+    (see <tt>reinitialize</tt>, below) or global symbols will be multiply defined. 
+    
+    <dt><tt>load &quot;file&quot;</tt> 
+    <dd>Synonym for <tt>read</tt>. 
+    <dt><tt>execute &quot;a.out&quot;</tt> 
+    <dd>Read the MIPS executable file <em>a.out</em> into SPIM's memory. 
+    <dt><tt>run &lt;addr&gt;</tt> 
+    <dd>Start running a program. If the optional address <em>addr</em> is provided, 
+    the program starts at that address. Otherwise, the program starts at the 
+    global symbol <tt>__start</tt>, which is defined by the default trap handler 
+    to call the routine at the global symbol <tt>main</tt> with the usual MIPS 
+    calling convention. 
+    <dt><tt>step &lt;N&gt;</tt> 
+    <dd>Step the program for <em>N</em> (default: 1) instructions. Print instructions 
+    as they execute. 
+    <dt><tt>continue</tt> 
+    <dd>Continue program execution without stepping. 
+    <dt><tt>print $N</tt> 
+    <dd>Print register <em>N</em>. 
+    <dt><tt>print $fN</tt> 
+    <dd>Print floating point register <em>N</em>. 
+    <dt><tt>print addr</tt> 
+    <dd>Print the contents of memory at address <em>addr</em>. 
+    <dt><tt>print_sym</tt> 
+    <dd>Print the contents of the symbol table, i.e., the addresses of the global 
+    (but not local) symbols. 
+    <dt><tt>reinitialize</tt> 
+    <dd>Clear the memory and registers. 
+    <dt><tt>breakpoint addr</tt> 
+    <dd>Set a breakpoint at address <em>addr</em>. <em>addr</em> can be either 
+    a memory address or symbolic label. 
+    <dt><tt>delete addr</tt> 
+    <dd>Delete all breakpoints at address <em>addr</em>. 
+    <dt><tt>list</tt> 
+    <dd>List all breakpoints. 
+    <dt><tt>.</tt> 
+    <dd>Rest of line is an assembly instruction that is stored in memory. 
+    <dt><tt>&lt;nl&gt;</tt> 
+    <dd>A newline reexecutes previous command. 
+    <dt><tt>?</tt> 
+    <dd>Print a help message. 
+</dl>
+<p>Most commands can be abbreviated to their unique prefix e.g., <tt>ex</tt>, 
+<tt>re</tt>, <tt>l</tt>, <tt>ru</tt>, <tt>s</tt>, <tt>p</tt>. More dangerous 
+commands, such as <tt>reinitialize</tt>, require a longer prefix. </p>
+<h3><a name="SECTION00012200000000000000">1.2.2 X-Window Interface</a></h3>
+<p><centre> <br>
+<strong>Figure:</strong> X-window interface to SPIM.<br>
+<br>
+The X version of SPIM, <tt>xspim</tt>, looks different, but should operate in 
+the same manner as <tt>spim</tt>. The X window has five panesi. The top pane 
+displays the contents of the registers. It is continually updated, except while 
+a program is running. </p>
+<p>The next pane contains the buttons that control the simulator: 
+<dl>
+    <dt><b>quit</b> 
+    <dd>Exit from the simulator. 
+    <dt><b>load</b> 
+    <dd>Read a source or executable file into memory. 
+    <dt><b>run</b> 
+    <dd>Start the program running. 
+    <dt><b>step</b> 
+    <dd>Single-step through a program. 
+    <dt><b>clear</b> 
+    <dd>Reinitialize registers or memory. 
+    <dt><b>set value</b> 
+    <dd>Set the value in a register or memory location. 
+    <dt><b>print</b> 
+    <dd>Print the value in a register or memory location. 
+    <dt><b>breakpoint</b> 
+    <dd>Set or delete a breakpoint or list all breakpoints. 
+    <dt><b>help</b> 
+    <dd>Print a help message. 
+    <dt><b>terminal</b> 
+    <dd>Raise or hide the console window. 
+    <dt><b>mode</b> 
+    <dd>Set SPIM operating modes. 
+</dl>
+<p>The next two panes display the memory contents. The top one shows instructions 
+from the user and kernel text segments.<a href="footnode.html#157" name="tex2html4">[+]</a> 
+The first few instructions in the text segment are startup code (<tt>__start</tt>) 
+that loads <tt>argc</tt> and <tt>argv</tt> into registers and invokes the <tt>main</tt> 
+routine. </p>
+<p>The lower of these two panes displays the data and stack segments. Both panes 
+are updated as a program executes. </p>
+<p>The bottom pane is used to display messages from the simulator. It does not 
+display output from an executing program. When a program reads or writes, its 
+IO appears in a separate window, called the Console, which pops up when needed. 
+</p>
+<h2><a name="SECTION00013000000000000000">1.3 Surprising Features</a></h2>
+<p>Although SPIM faithfully simulates the MIPS computer, it is a simulator and 
+certain things are not identical to the actual computer. The most obvious differences 
+are that instruction timing and the memory systems are not identical. SPIM does 
+not simulate caches or memory latency, nor does it accurate reflect the delays 
+for floating point operations or multiplies and divides. </p>
+<p>Another surprise (which occurs on the real machine as well) is that a pseudoinstruction 
+expands into several machine instructions. When single-stepping or examining 
+memory, the instructions that you see are slightly different from the source 
+program. The correspondence between the two sets of instructions is fairly simple 
+since SPIM does not reorganize the instructions to fill delay slots. </p>
+<h2><a name="SECTION00014000000000000000">1.4 Assembler Syntax</a></h2>
+<p><a name="secsyntax">&nbsp;</a> </p>
+<p>Comments in assembler files begin with a sharp-sign (<tt>#</tt>). Everything 
+from the sharp-sign to the end of the line is ignored. </p>
+<p>Identifiers are a sequence of alphanumeric characters, underbars (<tt>_</tt>), 
+and dots (<tt>.</tt>) that do not begin with a number. Opcodes for instructions 
+are reserved words that are <b>not</b> valid identifiers. Labels are declared 
+by putting them at the beginning of a line followed by a colon, for example: 
+</p>
+<pre>        .data
+  item: .word 1
+        .text
+        .globl main             # Must be global
+  main: lw $t0, item</pre>
+<p>Strings are enclosed in double-quotes (<tt>&quot;</tt>). Special characters 
+in strings follow the C convention: </p>
+<pre>    newline        \n
+    tab            \t
+    quote          \&quot;</pre>
+<p>SPIM supports a subset of the assembler directives provided by the MIPS assembler: 
+
+<dl>
+    <dt><tt>.align n</tt> 
+    <dd>Align the next datum on a 2-byte boundary. For example, <tt>.align 2</tt> 
+    aligns the next value on a word boundary. <tt>.align 0</tt> turns off automatic 
+    alignment of <tt>.half</tt>, <tt>.word</tt>, <tt>.float</tt>, and <tt>.double</tt> 
+    directives until the next <tt>.data</tt> or <tt>.kdata</tt> directive. 
+    <dt><tt>.ascii str</tt> 
+    <dd>Store the string in memory, but do not null-terminate it. 
+    <dt><tt>.asciiz str</tt> 
+    <dd>Store the string in memory and null-terminate it. 
+    <dt><tt>.byte b1, ..., bn</tt> 
+    <dd>Store the <i>n</i> values in successive bytes of memory. 
+    <dt><tt>.data &lt;addr&gt;</tt> 
+    <dd>The following data items should be stored in the data segment. If the 
+    optional argument <em>addr</em> is present, the items are stored beginning 
+    at address <em>addr</em>. 
+    <dt><tt>.double d1, ..., dn</tt> 
+    <dd>Store the <i>n</i> floating point double precision numbers in successive 
+    memory locations. 
+    <dt><tt>.extern sym size</tt> 
+    <dd>Declare that the datum stored at <tt>sym</tt> is <tt>size</tt> bytes 
+    large and is a global symbol. This directive enables the assembler to store 
+    the datum in a portion of the data segment that is efficiently accessed 
+    via register <tt>$gp</tt>. 
+    <dt><tt>.float f1, ..., fn</tt> 
+    <dd>Store the <i>n</i> floating point single precision numbers in successive 
+    memory locations. 
+    <dt><tt>.globl sym</tt> 
+    <dd>Declare that symbol <tt>sym</tt> is global and can be referenced from 
+    other files. 
+    <dt><tt>.half h1, ..., hn</tt> 
+    <dd>Store the <i>n</i> 16-bit quantities in successive memory halfwords. 
+    
+    <dt><tt>.kdata &lt;addr&gt;</tt> 
+    <dd>The following data items should be stored in the kernel data segment. 
+    If the optional argument <em>addr</em> is present, the items are stored 
+    beginning at address <em>addr</em>. 
+    <dt><tt>.ktext &lt;addr&gt;</tt> 
+    <dd>The next items are put in the kernel text segment. In SPIM, these items 
+    may only be instructions or words (see the <tt>.word</tt> directive below). 
+    If the optional argument <em>addr</em> is present, the items are stored 
+    beginning at address <em>addr</em>. 
+    <dt><tt>.space n</tt> 
+    <dd>Allocate <i>n</i> bytes of space in the current segment (which must 
+    be the data segment in SPIM). 
+    <dt><tt>.text &lt;addr&gt;</tt> 
+    <dd>The next items are put in the user text segment. In SPIM, these items 
+    may only be instructions or words (see the <tt>.word</tt> directive below). 
+    If the optional argument <em>addr</em> is present, the items are stored 
+    beginning at address <em>addr</em>. 
+    <dt><tt>.word w1, ..., wn</tt> 
+    <dd>Store the <i>n</i> 32-bit quantities in successive memory words. 
+</dl>
+<p>SPIM does not distinguish various parts of the data segment (<tt>.data</tt>, 
+<tt>.rdata</tt>, and <tt>.sdata</tt>). </p>
+<h2><a name="SECTION00015000000000000000">1.5 System Calls</a></h2>
+<p><a name="secscall">&nbsp;</a> </p>
+<p align="center">&nbsp;</p>
+<p><br>
+<strong>Table:</strong> System services.<br></p>
+<p>SPIM provides a small set of operating-system-like services through the system 
+call (<tt>syscall</tt>) instruction. To request a service, a program loads the 
+system call code (see Table <a href="node1.html#tabsyscall">1</a>) into register 
+<tt>$v0</tt> and the arguments into registers <tt>$a0 . . . $a3</tt> (or <tt>$f12</tt> 
+for floating point values). System calls that return values put their result 
+in register <tt>$v0</tt> (or <tt>$f0</tt> for floating point results). For example, 
+to print ``<tt>the answer = 5</tt>'', use the commands: </p>
+<pre>        .data
+  str:  .asciiz &quot;the answer = &quot;
+        .text
+        li $v0, 4        # system call code for print_str
+        la $a0, str      # address of string to print
+        syscall          # print the string
+&nbsp;
+        li $v0, 1        # system call code for print_int
+        li $a0, 5        # integer to print
+        syscall          # print it</pre>
+<p><tt>print_int</tt> is passed an integer and prints it on the console. <tt>print_float</tt> 
+prints a single floating point number. <tt>print_double</tt> prints a double 
+precision number. <tt>print_string</tt> is passed a pointer to a null-terminated 
+string, which it writes to the console. </p>
+<p><tt>read_int</tt>, <tt>read_float</tt>, and <tt>read_double</tt> read an 
+entire line of input up to and including the newline. Characters following the 
+number are ignored. <tt>read_string</tt> has the same semantics as the Unix 
+library routine <tt>fgets</tt>. It reads up to<i> n - 1</i> characters into 
+a buffer and terminates the string with a null byte. If there are fewer characters 
+on the current line, it reads through the newline and again null-terminates 
+the string. <b>Warning:</b> programs that use these syscalls to read from the 
+terminal should not use memory-mapped IO (see Section 5). </p>
+<p><tt>sbrk</tt> returns a pointer to a block of memory containing <i>n</i> 
+additional bytes. <tt>exit</tt> stops a program from running. </p>
+<p><hr> </p>
+</body>
+
+</html>
