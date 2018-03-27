@@ -1,13 +1,13 @@
 #
 #  First MIPS program
 #
-          .data		
+          .data		#Start of data segment
 One:   .word    1          # first value, initialized to 1
 Two:   .word    2          # second value, initialized to 2
 
 # program to add 1+2!
 
-          .text
+          .text #Start of text segment
 main:		
 # load constants and add values
           lw       $s0,One        # first operand

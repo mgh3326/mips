@@ -1,16 +1,16 @@
 
 
-	.data	
+	.data	#Start of data segment
 	
-	txt1:	.asciiz "result sum = "
+	txt1:	.asciiz "result sum = " #Store a null-terminated string in memory
 	txt2:	.asciiz "result avg = "
 	txt3:	.asciiz "\n"
 
 	input:	.word	10, 20, 30, 40, 50, 60, 70, 80, 90, 100
-	addre:	.word	0
+	addre:	.word	0 #Start of data segment
 	avgre:	.word	0
 
-	.text
+	.text #– Start of text segment
 main:
 	li  $t0,0		# set count=0 (actually addui $t0,0)
 	li	$t5,0		# set add=0 (actually addui $t5,0)
@@ -18,7 +18,7 @@ main:
 	la	$t3,input 		# $t3<- addr of input
 
 
-for:	bgt	$t0,11,forend	# end with t0 = 11
+for:	bgt	$t0,11,forend	# end with t0 = 11 if ($t0 > 11) goto forend
 	addi	$t0,$t0,1		# inc 1
 	lw 	$t2,0($t3)	# load 10,20,.....
 	addu	$t5,$t5,$t2	# sum each data
