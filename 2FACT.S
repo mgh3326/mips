@@ -23,7 +23,7 @@ main:
       li   	$v0, 5     # input number
       syscall
       
-      sw   	$v0,input # 얘가 사용자로부터 input인가?
+      sw   	$v0,input # li 5 >> input
 
 #------------------------------------------
       li   	$t0,1      
@@ -33,7 +33,7 @@ main:
 for:    
 
       mul  	$t0,$t0,$t1
-      addi 	$t1, $t1,1
+      add 	$t1, $t1,1
 
       ble 	$t1,$v0, for
 #----------------------------------------      
