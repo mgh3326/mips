@@ -12,7 +12,7 @@ main:
 # load constants and add values
           lw       $s0,One        # first operand
           lw       $s1,Two       # second operand
-          addi     $s2,$s0,2   # add
+          add     $s2,$s0,2   # add
 # note registers in an add instrcution need not be distinct
 # print value
           move   $a0,$s0       # pass result to syscall
