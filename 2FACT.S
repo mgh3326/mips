@@ -23,7 +23,7 @@ main:
       li   	$v0, 5     # input number
       syscall
       
-      sw   	$v0,input
+      sw   	$v0,input # 얘가 사용자로부터 input인가?
 
 #------------------------------------------
       li   	$t0,1      
