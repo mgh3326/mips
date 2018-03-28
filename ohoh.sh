@@ -1,0 +1,1 @@
+java -jar Mars4_5.jar 100000 practice1.S
