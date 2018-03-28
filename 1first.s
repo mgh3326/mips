@@ -10,7 +10,7 @@ Two:   .word    2          # second value, initialized to 2
           .text #Start of text segment
 main:		
 # load constants and add values
-          lw       $s0,One        # first operand
+          lw       $s0,One        # first operand s : 8 t : 10 v : 2 a : 4
           lw       $s1,Two       # second operand
           add     $s2,$s0,$s1   # add
 # note registers in an add instrcution need not be distinct
