@@ -1,4 +1,4 @@
-# 10개의 정수중 3보다 큰정수의 개수구하기, 1~30까지 합구하기
+# Find the number of integer greater than 3 out of 10 integer
 .data 
 
 Num: .word 1,2,3,4,5,6,7,8,9,10

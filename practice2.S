@@ -1,4 +1,4 @@
-#  1~30까지 합구하기
+# Find the sum from 1 to 30
 
 .text
 
