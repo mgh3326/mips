@@ -1,4 +1,4 @@
-# 10ê°œì˜ ì •ìˆ˜ì¤‘ 3ë³´ë‹¤ í°ì •ìˆ˜ì˜ ê°œìˆ˜êµ¬í•˜ê¸°, 1~30ê¹Œì§€ í•©êµ¬í•˜ê¸°
+# 10°³ÀÇ Á¤¼öÁß 3º¸´Ù Å«Á¤¼öÀÇ °³¼ö±¸ÇÏ±â, 1~30±îÁö ÇÕ±¸ÇÏ±â
 .data 
 
 Num: .word 1,2,3,4,5,6,7,8,9,10
@@ -8,27 +8,32 @@ Num: .word 1,2,3,4,5,6,7,8,9,10
 li $s0, 0 # result
 li $s1, 0 # index
 li $t0, 1
-la $t1, Num
+la $v1,Num		# $v1 = Num address
 li $t3, 3
+li $t0, 0
 Up:
     addi $s0,$s0,1
-    addi $s1,$s1,1
+    
 for:
-    bgt $s1,10, Result
-    lw	$v0,0($t1)	# $v0 = pow2[a]
-    slti	$v0,$a0,3              # $v0 = a < 8 true 1?
-    bgt $v0,$t3,Up
-    
-    
-    sll $t0,$s1,2
-    mul $t2,$t0,$s1
-    add $t1,$t1,$t0
+    sll		$v0,$t0,2	# $v0 = a*4
+	addu	$v0,$v0,$v1	# $v0 = pow2 + a*4
+	lw		$s2,0($v0)	# $v0 = pow2[a]
+    addi $t0,$t0,1
     addi $s1,$s1,1
-    j for
+    bgt $s2,3,Up
+    blt $s1,10,for
 
-
+sub $s0,$s0,1
+move $v0,$s0
 
 
 # Exceed:
 
-Result:
+Return:
+# print value
+          	move   	$a0,$v0       	# pass result to syscall
+          	li          	$v0, 1        	# specify syscall is a write integer
+          	syscall                   	# execute syscall
+# all done....
+         	li          	$v0, 10       	#  adios.....
+         	syscall	
