@@ -15,7 +15,8 @@ Up:
     addi $s0,$s0,1
     
 for:
-    sll		$v0,$t0,2	# $v0 = a*4
+	# sll		$v0,$t0,2	# $v0 = a*4
+	mul $v0,$t0,4
 	addu	$v0,$v0,$v1	# $v0 = pow2 + a*4
 	lw		$s2,0($v0)	# $v0 = pow2[a]
     addi $t0,$t0,1
