@@ -12,15 +12,15 @@ result:     .word    0
 .text
 
 main:
-      li 	$v0,4     	# print "number = "
+      li 	$v0,4     	# print "number = " print int
       la  	$a0,str1
       syscall
      
-      li   	$v0,4
+      li   	$v0,4       # print string
       la   	$a0,str2	# "\n"
       syscall
 
-      li   	$v0, 5     # input number
+      li   	$v0, 5     # input number  Read string
       syscall
       
       sw   	$v0,input # li 5 >> input
@@ -28,14 +28,14 @@ main:
 #------------------------------------------
       li   	$t0,1      
       li   	$t1,1
-      bgt  	$t1,$v0,end
+      bgt  	$t1,$v0,end # if t1 > v0 goto end
 
 for:    
 
       mul  	$t0,$t0,$t1
       addi 	$t1, $t1,1
 
-      ble 	$t1,$v0, for
+      ble 	$t1,$v0, for # if t1 <=(low or equal) goto for
 #----------------------------------------      
 
 end: sw  	$t0,result
@@ -60,5 +60,5 @@ end: sw  	$t0,result
       la   	$a0,str4	# " \n"
       syscall
 
-      li   	$v0,10
+      li   	$v0,10      # exit
       syscall
