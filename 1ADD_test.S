@@ -10,7 +10,7 @@
 	addre:	.word	0 #Start of data segment
 	avgre:	.word	0
 
-	.text #– Start of text segment
+	.text #?? Start of text segment
 main:
 	li  $t0,0		# set count=0 (actually addui $t0,0)
 	li	$t5,0		# set add=0 (actually addui $t5,0)
@@ -42,7 +42,7 @@ print:
 	sw   	$t5,addre
    
 	li   	$v0,1
-	lw   	$a0,addre	# print sum
+	move   	$a0,$t5	# print sum
 
 	syscall
       
@@ -61,6 +61,5 @@ print:
 	syscall
 
 
-Exit:	
-	li   	$v0,10
+Exit:	li   	$v0,10
 	syscall
